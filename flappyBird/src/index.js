@@ -31,6 +31,7 @@ function createPipe(pipeHeight, pipeWidth, skyHeight, skyWidth) {
     pipe.style.left = skyWidth + 'px';
 
     let pipeUpEnd = Math.random() * (skyHeight * 0.5 - skyHeight / ROW_COUNT) + skyHeight / ROW_COUNT
+    let pipeDownEnd;
     let pipeUp = document.createElement('div');
     pipeUp.classList.add('pipeUp');
     pipeUp.style.backgroundColor = '#00c503';
@@ -47,10 +48,11 @@ function createPipe(pipeHeight, pipeWidth, skyHeight, skyWidth) {
     pipeDown.classList.add('pipeDown');
     pipeDown.style.backgroundColor = '#00c503';
     if (skyHeight - windowHeight - pipeUpEnd < 0) {
-        pipeDown.style.minHeight = 0 + 'px';
+        pipeDownEnd = 0;
     } else {
-        pipeDown.style.minHeight = skyHeight - windowHeight - pipeUpEnd + 'px';
+        pipeDownEnd = skyHeight - windowHeight - pipeUpEnd;
     }
+    pipeDown.style.minHeight = pipeDownEnd + 'px';
     pipeDown.style.minWidth = pipeWidth + 'px';
     pipeDown.style.display='inline-block';
 
@@ -58,8 +60,24 @@ function createPipe(pipeHeight, pipeWidth, skyHeight, skyWidth) {
     return pipe;
 }
 
+function createBird(skyHeight, skyWidth) {
+    let bird = document.createElement('div');
+
+    bird.classList.add('bird')
+    bird.style.backgroundColor = '#FFFF00'
+    let birdHeight = skyHeight/ROW_COUNT * 0.5
+    bird.style.height = birdHeight + 'px'
+    let birdWidth = skyWidth/COL_COUNT * 0.75
+    bird.style.width = birdWidth + 'px'
+    bird.style.position = 'fixed'
+    bird.style.top = skyHeight/2- birdHeight/2 + 'px'
+    bird.style.left = 0 + 'px'
+
+    return bird;
+}
+
 function placePipes() {
-    if (pipeDistance > Math.ceil(Math.random() * (pipeWidth * COL_COUNT - pipeWidth * 0.75) + pipeWidth * 0.75)) {
+    if (pipeDistance > Math.ceil(Math.random() * (pipeWidth * COL_COUNT - pipeWidth * 1.5) + pipeWidth * 1.5)) {
         pipeDistance = 0
 
         let pipe = createPipe(pipeHeight, pipeWidth, skyHeight, viewPortWidth)
@@ -86,9 +104,23 @@ function moveWorld() {
     requestAnimationFrame(moveWorld);
 }
 
+function letTheBirdFly() {
+    birdFlyHeight = birdFlyHeight + GRAVITY;
+    document.addEventListener('keydown', (e) => {
+        if (e.key === ' ') {
+            birdFlyHeight = -5;
+        }
+    });
+
+    bird.style.top = birdProps.top + birdFlyHeight + 'px';
+    birdProps = bird.getBoundingClientRect();
+    requestAnimationFrame(letTheBirdFly);
+}
+
 const ROW_COUNT = 10;
 const COL_COUNT = 14;
-const MOVE_SPEED = 2;
+const MOVE_SPEED = 3;
+const GRAVITY = 0.3;
 
 let viewPortHeight = window.innerHeight;
 let viewPortWidth = window.innerWidth;
@@ -97,8 +129,11 @@ let skyHeight = viewPortHeight - earthHeight;
 let pipeWidth = viewPortWidth / COL_COUNT;
 let pipeHeight = skyHeight;
 let pipeDistance = 0
+let birdFlyHeight = 0;
 let sky = createSky(skyHeight, viewPortWidth);
 let earth = createEarth(earthHeight, skyHeight, viewPortWidth);
+let bird = createBird(skyHeight, viewPortWidth);
+let birdProps = bird.getBoundingClientRect();
 
 let gameContent = document.createElement('div');
 gameContent.append(sky, earth);
@@ -107,3 +142,8 @@ requestAnimationFrame(placePipes);
 requestAnimationFrame(moveWorld);
 
 document.body.append(gameContent)
+document.body.append(bird)
+
+requestAnimationFrame(letTheBirdFly)
+
+
