@@ -5,6 +5,7 @@ import GameController from "./controllers/game-controller";
 import gameView from "./views/gameview";
 import statsView from "./views/statsview";
 import StatController from "./controllers/stat-controller";
+import ScoreBoard from "./models/scoreboard";
 
 let ui = new uiElements();
 
@@ -15,6 +16,7 @@ let start_view = startView(ui, gameControlClick);
 
 let gameController = new GameController()
 let statController = new StatController()
+let scoreBoard = new ScoreBoard()
 
 
 let sky = ui.sky();
@@ -24,19 +26,19 @@ view.append(sky, ground, start_view)
 document.body.append(view)
 
 function gameControlClick(e) {
+
     switch (e.target.id) {
         case 'game':
             view.removeChild(start_view);
             view.append(game_view)
+            gameController.counter(ui);
             setTimeout(function () {
-                gameController.start(game_view, ui)
-            }, 3000)
-
+                gameController.start(game_view, ui, scoreBoard)
+            }, 2500)
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
-                    view.removeChild(game_view)
-                    game_view = gameView()
-                    view.append(start_view)
+                    location.reload();
+                    return false;
                 }
             });
             break;
@@ -44,8 +46,13 @@ function gameControlClick(e) {
             console.log('stats')
             view.removeChild(start_view);
             view.append(stats_view);
-            statController.getStats(stats_view, ui)
-
+            statController.getStats(stats_view, ui, scoreBoard)
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    location.reload();
+                    return false;
+                }
+            });
             break;
     }
 }

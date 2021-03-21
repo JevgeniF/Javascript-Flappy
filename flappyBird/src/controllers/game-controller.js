@@ -3,14 +3,27 @@ export default class GameController {
     constructor() {
     }
 
-    start(gameView, ui) {
+    counter(ui) {
+        let counter = ui.counter('ready');
+        document.body.append(counter)
+        setTimeout(function () {
+            document.body.removeChild(counter)
+        }, 1000)
+        setTimeout(function () {
+            counter = ui.counter('fly')
+            document.body.append(counter)
+        }, 1000)
+        setTimeout(function () {
+            document.body.removeChild(counter)
+        }, 2000)
+    }
+
+    start(gameView, ui, scoreBoard) {
 
         let isGame = true;
         let score = 0;
         let currentScore = ui.scoreScreen()
-        let endGame = ui.endGame()
         gameView.append(currentScore)
-
         let animationSpeed = 3;
         let gravity = 0.3;
 
@@ -18,12 +31,20 @@ export default class GameController {
         gameView.append(bird);
         let birdProps = bird.getBoundingClientRect();
 
+        let music = ui.music()
+        document.body.append(music)
+        music.play().then(r => null)
+
         function move() {
             if (isGame === false) {
-                gameView.append(endGame)
-                let curScore = [{'currentScore': score}]
-                let json = JSON.stringify(curScore)
-                localStorage.setItem("currentScore", json)
+                let crash = ui.crash()
+                document.body.append(crash)
+                crash.play().then(r => null)
+                music.pause()
+                let endGame = ui.gameOver();
+                let message = ui.gameOverMessage()
+                scoreBoard.ifKingBirdy(gameView, ui, score)
+                gameView.append(endGame, message)
                 return;
             }
 
@@ -33,6 +54,8 @@ export default class GameController {
 
                 if (pipesProps.right <= 0) {
                     e.remove()
+                    score += 1
+                    currentScore.innerHTML = score.toString()
                 }
                 e.style.left = pipesProps.left - animationSpeed + 'px';
 
@@ -40,8 +63,7 @@ export default class GameController {
                     pipesProps.right < birdProps.left &&
                     pipesProps.right +
                     animationSpeed >= birdProps.left) {
-                    score += 1;
-                    currentScore.innerHTML = score.toString();
+
                 }
 
             });

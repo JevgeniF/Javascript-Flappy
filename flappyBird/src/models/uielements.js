@@ -16,12 +16,16 @@ export default class uiElements {
         this.sky();
         this.ground();
         this.scoreScreen();
-        this.endGame()
+        this.gameOver()
         this.statsName()
         this.inputText()
         this.inputWindow()
+        this.crash()
+        this.yourScore()
     }
 
+
+    //start screen
     name() {
         let name = new Image();
         name.classList.add('name');
@@ -74,6 +78,43 @@ export default class uiElements {
         gameButton.style.left = '25%'
 
         return gameButton;
+    }
+
+    //game screen
+    counter(string = "ready") {
+        let counter = new Image();
+        counter.classList.add('counter')
+        counter.src = './' + string + '.png'
+        let counterHeight = innerHeight / this.rowCount * 1
+        counter.style.height = counterHeight + 'px';
+        let counterWidth = innerWidth * 0.5
+        counter.style.width = counterWidth + 'px';
+        counter.style.position = 'fixed';
+        counter.style.top = innerHeight / 2 - counterHeight / 2 + 'px'
+        counter.style.left = innerWidth / 2 - counterWidth / 2 + 'px'
+
+        return counter;
+    }
+
+    crash() {
+        let crash = document.createElement('audio')
+        crash.src = './crash.wav'
+        crash.setAttribute("preload", "auto");
+        crash.setAttribute("controls", "none");
+        crash.style.display = 'none'
+
+        return crash;
+    }
+
+    music() {
+        let music = document.createElement('audio')
+        music.src = './music.mp3'
+        music.id = 'music'
+        music.setAttribute("preload", "auto");
+        music.setAttribute("controls", "none");
+        music.style.display = 'none'
+
+        return music;
     }
 
     bird() {
@@ -166,28 +207,31 @@ export default class uiElements {
         return ground
     }
 
-    endGame() {
-        let endGame = document.createElement('div')
-        endGame.style.position = 'fixed'
-        endGame.style.top = '20%'
-        endGame.style.left = innerWidth / 2 - (innerWidth * 0.5) / 2 + 'px'
+    gameOver() {
         let gameOver = new Image();
         gameOver.src = './gameOver.png'
         gameOver.classList.add('endGame')
         gameOver.style.height = innerHeight / this.rowCount + 'px';
         gameOver.style.width = innerWidth * 0.5 + 'px';
         gameOver.style.position = 'fixed';
+        gameOver.style.left = innerWidth / 2 - (innerWidth * 0.5) / 2 + 'px'
+        gameOver.style.top = '20%'
+
+        return gameOver
+    }
+
+    gameOverMessage() {
         let gameOverMessage = new Image();
         gameOverMessage.src = './gameOverMessage.png'
         gameOverMessage.classList.add('endGameMessage')
         gameOverMessage.style.height = innerHeight / this.rowCount + 'px';
         gameOverMessage.style.width = innerWidth * 0.5 + 'px';
         gameOverMessage.style.position = 'fixed';
-        gameOverMessage.style.top = '40%'
-        endGame.append(gameOver, gameOverMessage)
+        gameOverMessage.style.left = innerWidth / 2 - (innerWidth * 0.5) / 2 + 'px'
+        gameOverMessage.style.top = '80%'
 
 
-        return endGame
+        return gameOverMessage
     }
 
     scoreScreen() {
@@ -204,24 +248,53 @@ export default class uiElements {
         return scoreScreen;
     }
 
+    //stats
     statsName() {
         let statsName = new Image();
         statsName.classList.add('statsName');
         statsName.src = './statsName.png'
-        statsName.style.height = innerHeight / this.rowCount * 0.5 + 'px';
-        statsName.style.width = innerWidth * 0.25 + 'px';
+        statsName.style.height = innerHeight / this.rowCount + 'px';
+        statsName.style.width = innerWidth * 0.5 + 'px';
         statsName.style.position = 'fixed';
         statsName.style.top = '8%'
-        statsName.style.left = innerWidth / 2 - innerWidth * 0.25 / 2 + 'px'
+        statsName.style.left = innerWidth / 2 - innerWidth * 0.5 / 2 + 'px'
 
         return statsName;
+    }
+
+    yourScore() {
+        let yourScore = new Image();
+        yourScore.classList.add('yourScore');
+        yourScore.src = './yourScore.png'
+        yourScore.style.height = innerHeight / this.rowCount * 0.5 + 'px';
+        yourScore.style.width = innerWidth * 0.2 + 'px';
+        yourScore.style.position = 'fixed';
+        yourScore.style.top = '8%'
+        yourScore.style.left = innerWidth / 2 - innerWidth * 0.2 / 2 + 'px'
+
+        return yourScore;
+
+    }
+
+    statScore() {
+        let statScore = document.createElement('div')
+        statScore.classList.add('score')
+        statScore.style.position = 'absolute';
+        statScore.style.top = '8%'
+        statScore.style.left = innerWidth / 2 - innerHeight / this.rowCount / 2 + 'px'
+        statScore.style.zIndex = '100'
+        statScore.style.fontSize = innerHeight / this.rowCount + 'px';
+        statScore.style.color = '#FFFFFF'
+        statScore.innerHTML = '0';
+
+        return statScore;
     }
 
     inputText() {
         let inputText = document.createElement('div')
         inputText.classList.add('inputText')
         inputText.style.color = '#ffffff'
-        inputText.fontSize = innerHeight/this.rowCount * 2 + 'px'
+        inputText.fontSize = innerHeight / this.rowCount * 2 + 'px'
         inputText.style.position = 'fixed';
         inputText.style.top = '16%'
         inputText.style.left = "40%"
@@ -240,14 +313,15 @@ export default class uiElements {
         let button = document.createElement('button')
         button.type = 'button'
         button.id = 'add'
-        button.textContent = 'Add to Top'
+        button.textContent = 'I\'m the KING'
         inputWindow.append(input, button)
 
-        inputWindow.fontSize = innerHeight/this.rowCount + 'px'
+        inputWindow.fontSize = innerHeight / this.rowCount + 'px'
         inputWindow.style.position = 'fixed';
         inputWindow.style.top = '24%'
         inputWindow.style.left = "42%"
 
         return inputWindow;
     }
+
 }

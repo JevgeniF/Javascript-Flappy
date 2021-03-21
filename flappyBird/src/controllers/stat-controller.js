@@ -1,65 +1,47 @@
 export default class StatController {
 
-    constructor() {
-        this.currentScore = localStorage.getItem('currentScore')
-        this.topTen = localStorage.getItem('topTen')
-    }
+    getStats(statsView, ui, scoreBoard) {
 
-    getStats(statsView, ui) {
-
-        let score;
-        if(this.currentScore != null) {
-            score = JSON.parse(this.currentScore)[0]
+        if (scoreBoard.third != null) {
+            let birdC = ui.bird()
+            birdC.style.left = innerWidth / 2 - innerWidth / ui.colCount * 0.5 / 2 + 'px';
+            birdC.style.top = '50%'
+            statsView.append(birdC)
             let keys = []
-            for (let k in score) keys.push(k);
-            score = score[keys[0]]
+            for (let k in scoreBoard.third) keys.push(k);
+            let scoreC = ui.statScore()
+            scoreC.style.top = '53%'
+            scoreC.innerHTML = keys[0] + ': ' + scoreBoard.third[keys[0]]
+            statsView.append(scoreC)
+        }
+        if (scoreBoard.second != null) {
+            let birdB = ui.bird()
+            birdB.style.left = innerWidth / 2 - innerWidth / ui.colCount * 0.5 / 2 + 'px';
+            birdB.style.top = '35%'
+            statsView.append(birdB)
+            let keys = []
+            for (let k in scoreBoard.second) keys.push(k);
+            let scoreB = ui.statScore()
+            scoreB.style.top = '38%'
+            scoreB.innerHTML = keys[0] + ': ' + scoreBoard.second[keys[0]]
+            statsView.append(scoreB)
+        }
+        if (scoreBoard.first != null) {
+            let birdA = ui.bird()
+            birdA.style.left = innerWidth / 2 - innerWidth / ui.colCount * 0.5 / 2 + 'px';
+            birdA.style.top = '20%'
+            statsView.append(birdA)
+            let keys = []
+            for (let k in scoreBoard.first) keys.push(k);
+            let scoreA = ui.statScore()
+            scoreA.style.top = '23%'
+            scoreA.innerHTML = keys[0] + ': ' + scoreBoard.first[keys[0]]
+            statsView.append(scoreA)
         }
 
-        let playerName;
-
-        if (this.topTen == null && this.currentScore != null) {
-            let inputText = ui.inputText()
-            inputText.innerHTML = 'You can get in top! Please enter your name:'
-            statsView.append(inputText)
-            let input = ui.inputWindow()
-            statsView.append(input);
-            addEventListener('click', (e) => {
-                if (e.target.id === 'add') {
-                    playerName = document.getElementById('input').value
-                    let newTop = {}
-                    newTop[0] = [playerName, score]
-                    let json = JSON.stringify(newTop)
-                    localStorage.setItem("topTen", json);
-                    localStorage.removeItem('currentScore')
-                }
-            })
-        } else {
-            if (this.topTen != null) {
-                let top = JSON.parse(this.topTen)
-                let keys = []
-                for (let k in top) keys.push(k);
-                console.log(keys)
-                console.log(top[keys[keys.length -1]][1])
-                if (keys.length < 10 && score >= 0) {
-                    if (score < top[keys[keys.length - 1]][1]) {
-                        let inputText = ui.inputText()
-                        inputText.innerHTML = 'You can get in top! Please enter your name:'
-                        statsView.append(inputText)
-                        let input = ui.inputWindow()
-                        statsView.append(input);
-                        addEventListener('click', (e) => {
-                            if (e.target.id === 'add') {
-                                playerName = document.getElementById('input').value
-                                top[parseInt(keys[keys.length - 1]) + 1] = [playerName, score];
-                                let json = JSON.stringify(top)
-                                localStorage.setItem("topTen", json);
-                                localStorage.removeItem('currentScore')
-                            }
-                        })
-                    }
-                }
-            }
-        }
+        let message = ui.gameOverMessage()
+        statsView.append(message)
     }
 
 }
+
