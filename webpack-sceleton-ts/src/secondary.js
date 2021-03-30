@@ -1,1 +1,0 @@
-export let fido = 'Fido'
