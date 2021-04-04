@@ -1,4 +1,4 @@
-export interface iTodo {
+export interface ITodo {
     description: string;
     done: boolean;
 }
